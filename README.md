@@ -7,8 +7,9 @@ To run this project, you will need to open two separate terminal windows:
 3. gradle iot_sim
 
 4. Terminal 2: run the following command to start the IoT hub:
- gradle iot_hub
-5 To access the webpage
+5. gradle iot_hub
+
+6. To access the webpage
 After running the above coomands, 
 open your preffered web browser.
 6.Naviagte to the following URL:

@@ -3,7 +3,9 @@
 # Tests + JaCoCo coverage run at build time, so the image only builds if the
 # test suite is green — the same gate the CI pipeline enforces.
 # ---------------------------------------------------------------------------
-FROM gradle:5.6.4-jdk8 AS build
+# Pin the platform: the gradle:5.6.4-jdk8 base image only ships for linux/amd64,
+# so this keeps the build reproducible on ARM hosts (e.g. Apple Silicon) too.
+FROM --platform=linux/amd64 gradle:5.6.4-jdk8 AS build
 
 WORKDIR /app
 COPY --chown=gradle:gradle . .

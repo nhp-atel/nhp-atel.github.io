@@ -66,6 +66,8 @@ task iot_sim_ex(type: JavaExec, dependsOn: [test, jacocoTestReport]) {
 task iot_hub(type: JavaExec, dependsOn: [test, jacocoTestReport]) {
 	classpath sourceSets.main.runtimeClasspath
 	main = 'ece448.iot_hub.Main'
+	if (project.hasProperty("config"))
+		args project.getProperty('config')
 }
 
 6.times { proj ->

@@ -1,0 +1,41 @@
+# ---------------------------------------------------------------------------
+# Full local stack: MQTT broker + IoT Simulator + IoT Hub.
+# Brings up the entire system with a single command:
+#     docker compose up --build
+# Then open http://localhost:8088/index.html
+# ---------------------------------------------------------------------------
+services:
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: iot-mosquitto
+    ports:
+      - "1883:1883"
+    volumes:
+      - ./mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mosquitto_sub -t '$$SYS/#' -C 1 -W 2 || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  iot-sim:
+    build: .
+    container_name: iot-sim
+    command: gradle iot_sim -Pconfig=simConfig.docker.json -x test -x jacocoTestReport --no-daemon
+    ports:
+      - "8080:8080"
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+
+  iot-hub:
+    build: .
+    container_name: iot-hub
+    command: gradle iot_hub -Pconfig=hubConfig.docker.json -x test -x jacocoTestReport --no-daemon
+    ports:
+      - "8088:8088"
+    depends_on:
+      mosquitto:
+        condition: service_healthy
+      iot-sim:
+        condition: service_started

@@ -1,0 +1,7 @@
+.git
+.gitignore
+bin
+build
+*.md
+.github
+*.code-workspace
